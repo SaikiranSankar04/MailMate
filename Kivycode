@@ -1,0 +1,79 @@
+import imaplib
+import email
+from email.header import decode_header
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+
+# Provide your Gmail credentials
+username = "osprojectbce@gmail.com"
+password = "fdaracnesstaapdx"
+
+# Connect to Gmail's IMAP server
+imap = imaplib.IMAP4_SSL("imap.gmail.com")
+imap.login(username, password)
+imap.select("inbox")
+
+# Search for all unread emails in the inbox
+result, data = imap.search(None, "UNSEEN")
+email_ids = data[0].split()
+
+# Fetch email bodies for each unread email
+emails_info = []
+for email_id in email_ids:
+    result, data = imap.fetch(email_id, "(RFC822)")
+    raw_email = data[0][1]
+    msg = email.message_from_bytes(raw_email)
+    # Get subject
+    subject_header = msg["Subject"]
+    if subject_header is not None:
+        subject = decode_header(subject_header)[0][0]
+        if subject is None:
+            subject = "No subject"
+        else:
+            subject = subject.decode() if isinstance(subject, bytes) else subject
+    else:
+        subject = "No subject"
+    # Get sender
+    from_header = msg.get("From")
+    if from_header is not None:
+        from_ = decode_header(from_header)[0][0]
+        if from_ is None:
+            from_ = "Unknown sender"
+        else:
+            from_ = from_.decode() if isinstance(from_, bytes) else from_
+    else:
+        from_ = "Unknown sender"
+    # Get body
+    payload = msg.get_payload(decode=True)
+    body = payload.decode() if payload else "No body found"
+    emails_info.append({"Subject": subject, "From": from_, "Body": body})
+
+# Close the connection
+imap.close()
+imap.logout()
+
+
+class EmailViewer(BoxLayout):
+    def __init__(self, **kwargs):
+        super(EmailViewer, self).__init__(**kwargs)
+        self.orientation = "vertical"
+
+        for email_info in emails_info:
+            subject_label = Label(text="Subject: " + email_info["Subject"])
+            from_label = Label(text="From: " + email_info["From"])
+            body_label = Label(text="Body: " + email_info["Body"])
+
+            self.add_widget(subject_label)
+            self.add_widget(from_label)
+            self.add_widget(body_label)
+            self.add_widget(Label(text="=" * 50))
+
+
+class EmailViewerApp(App):
+    def build(self):
+        return EmailViewer()
+
+
+if __name__ == "__main__":
+    EmailViewerApp().run()

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Dashboard</title>
+</head>
+<body>
+    <h1>Email Dashboard</h1>
+    <ul>
+        {% for email in emails %}
+        <li>
+            <strong>Subject:</strong> {{ email.subject }} <br>
+            <strong>From:</strong> {{ email.from }} <br>
+            <strong>Body:</strong> {{ email.body }} <br>
+            <hr>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

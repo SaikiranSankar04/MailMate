@@ -1,0 +1,33 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #F0E68C; /* Pastel yellow */
+}
+
+h1 {
+    color: #556B2F; /* Dark olive green */
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    background-color: #D2B48C; /* Pastel brown */
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+strong {
+    color: #556B2F; /* Dark olive green */
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #556B2F; /* Dark olive green */
+    margin: 5px 0;
+}
